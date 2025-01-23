@@ -1,0 +1,34 @@
+The next greater element 2 - https://leetcode.com/problems/next-greater-element-ii/description/
+Changed the usual method of monostack with deque   
+Time complexity - O(2n);     
+Time complexity - O(2n+2n);     (WORST CASE , while loop will go 2N times)
+Space complexity - O(n);
+
+Code:
+class Solution {
+public:
+    vector<int> nextGreaterElements(vector<int>& nums) {
+        deque<int>q ;
+        int n=nums.size();
+
+        vector<int> ans(n,-1);  //  shuru se hi -1 assign kr do , taaki largest element ko -1 ka assign krna pade 
+        for(int i=0;i<2*n;i++)  // 2 baar loop aaega , toh double length ka chalega
+        {
+            int ele = nums[i%n];
+            // if(q.empty()) q.push_back(i);
+
+            while(!q.empty() && nums[q.back()] < ele) {
+                ans[q.back()] = ele;
+                q.pop_back();
+                // q.push(i);
+            } 
+
+            if(i<n)
+            {
+                q.push_back(i);    // only 1st iteration mei dequeue mei push krna 
+            }
+        }
+        
+        return ans;
+    }
+};
