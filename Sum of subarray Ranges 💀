@@ -1,0 +1,177 @@
+My code for the Sum of sub array ranges problem Leetcode
+C++
+1. Make 4 stacks for :
+    next greater element
+    previous greater element
+    next smaller element
+    previous smaller element
+
+2. If noticed , The answer is just the ∑ (Maximum of subarrays)  - ∑ (Minimum of all the subarrays)
+
+3. This is the All rounder problem and willl test your thinking skill .
+
+4. Prerequisites : sum of subarray minimum 
+
+class Solution {
+
+vector<int> next_greater_ele(vector<int> & arr)  
+{
+
+    int n=arr.size();
+    // 1  4   6   7  3   7  8 1
+    vector <int> ans(n);
+    // -1 -1 -1  -1  7  -1 -1 8
+    stack<int> st;
+    
+
+    for(int i = n-1;i>=0;i--)
+    {
+        while(!st.empty() && arr[i] >= arr[st.top()])
+        {
+            st.pop();
+        }
+        ans[i] = st.empty() ? n : st.top();
+        st.push(i);
+
+    }
+
+   return ans; 
+}
+
+
+vector<int> previous_greater_ele(vector<int> & arr)  // sum of maximum subarray
+{
+    int n=arr.size();
+    // 1  4   6   7  3   7  8 1
+    vector <int> ans(n);
+    // -1 -1 -1  -1  7  -1 -1 8
+    stack<int> st;
+    // 1  4  6  7  3
+    for(int i=0;i<n;i++)
+    {
+        while(!st.empty() && arr [i]  > arr[st.top()])
+        {
+            st.pop();
+        }
+
+        ans[i] = st.empty() ? -1 : st.top();
+
+        st.push(i);
+    }
+
+   return ans; 
+}
+
+
+
+long long  sub_max(vector<int>& arr)
+{
+// define a function for finding the next largest and pre largest element
+
+// stop condition : jab target_element < array ke element se , iska matlab vo utne region mei sabse bada hai
+
+long long  sum=0;
+vector<int> pre = previous_greater_ele(arr);
+vector<int> next = next_greater_ele(arr);
+const int mod = 1e9 + 7;
+for(int i =0 ;i<arr.size();i++)
+{
+    int next_range = next[i] - i;
+    int low_range  = i-pre[i];
+
+   long long temp = (long long)arr[i] * next_range % mod;
+        temp = temp * low_range % mod;
+        sum = (sum + temp) % mod;
+}
+return sum;
+
+
+
+}
+
+vector<int> next_smaller_ele(vector<int> & arr)  // sum of maximum subarray
+{
+    int n=arr.size();
+    // 1  4   6   7  3   7  8 1
+    vector <int> ans(n);
+    stack<int> st;
+    for(int i=n-1;i>=0;i--)
+    {
+        while(!st.empty() && arr [i]  <= arr[st.top()])
+        {
+            st.pop();
+        }
+
+        ans[i] = st.empty() ? n : st.top();
+
+        st.push(i);
+    }
+
+   return ans; 
+}
+
+vector<int> previous_smaller_ele(vector<int> & arr)  // sum of maximum subarray
+{
+    int n=arr.size();
+    // 1  4   6   7  3   7  8 1
+    vector <int> ans(n);
+    // -1 -1 -1  -1  7  -1 -1 8
+    stack<int> st;
+    // 1  4  6  7  3
+    for(int i=0;i<n;i++)
+    {
+        while(!st.empty() && arr [i]  < arr[st.top()])
+        {
+            st.pop();
+        }
+
+        ans[i] = st.empty() ? -1 : st.top();
+
+        st.push(i);
+    }
+
+   return ans; 
+}
+
+
+
+
+long long sub_min(vector<int>& arr)
+{
+long long  sum=0;
+vector<int> pre = previous_smaller_ele(arr);
+vector<int> next = next_smaller_ele(arr);
+const int mod = 1e9 + 7;
+for(int i =0 ;i<arr.size();i++)
+{
+    int next_range = next[i] - i;
+    int low_range  = i-pre[i];
+
+     long long temp = (long long)arr[i] * next_range % mod;
+        temp = temp * low_range % mod;
+        sum = (sum + temp) % mod;
+}
+return sum;
+
+}
+
+
+
+
+
+public:
+    long long subArrayRanges(vector<int>& nums) {
+        // Find the sum of the subarray maximum and minimum
+        //sum of subarray maximum - sum of subarray minimum
+
+
+
+long long lar = sub_max(nums);
+long long min = sub_min(nums);
+cout<<lar<<endl;
+const int mod = 1e9 + 7;
+cout<<min;
+return (lar-min + mod)%mod;
+
+    }
+};
